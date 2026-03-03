@@ -4,14 +4,20 @@ const cheerio = require('cheerio');
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
+
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.options('*', cors());
 
 function detectProno(analyse, domicile, exterieur) {
     const text = analyse.toLowerCase();
     const dom = domicile.toLowerCase();
     const ext = exterieur.toLowerCase();
 
-    // Match nul
     if (text.includes('match nul') || text.includes('nul') ||
         text.includes('partage') || text.includes('egalite')) {
         return 'N';
@@ -32,7 +38,6 @@ function detectProno(analyse, domicile, exterieur) {
     });
 
     if (positionVictoire === Infinity) {
-        // Chercher avantage + nom équipe
         const posAvantage = text.indexOf('avantage');
         if (posAvantage !== -1) {
             const textApresAvantage = text.substring(posAvantage);
@@ -45,8 +50,6 @@ function detectProno(analyse, domicile, exterieur) {
     }
 
     const textAvantVictoire = text.substring(0, positionVictoire);
-
-    // filtre longueur > 2 au lieu de > 3
     const extMots = ext.split(' ').filter(m => m.length > 2);
     const domMots = dom.split(' ').filter(m => m.length > 2);
 
@@ -58,8 +61,7 @@ function detectProno(analyse, domicile, exterieur) {
 
     if (text.includes('extérieur') || text.includes('exterieur') ||
         text.includes('déplacement') || text.includes('deplacement')) {
-        // Vérifier que c'est pas "peine à l'extérieur"
-        if (text.includes('peine à l\'extérieur') || text.includes('peine a l\'exterieur')) {
+        if (text.includes("peine à l'extérieur") || text.includes("peine a l'exterieur")) {
             return '1';
         }
         return '2';
