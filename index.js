@@ -57,10 +57,3 @@ app.get('/pronos', async (req, res) => {
 });
 
 module.exports = app;
-```
-
-Ensuite dans le terminal :
-```
-git add .
-git commit -m "suppression puppeteer"
-git push
