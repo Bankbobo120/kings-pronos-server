@@ -17,14 +17,12 @@ function detectProno(analyse, domicile, exterieur) {
         return 'N';
     }
 
-    // Trouver quelle équipe est mentionnée en premier comme gagnante
     const motsCleVictoire = [
-        'devrait l\'emporter', 'devrait dominer', 'devrait s\'imposer',
-        'victoire', 'gagne', 'l\'emporter', 'dominer', 's\'imposer',
-        'favori', 'favoris', 'avantage', 'meilleure forme'
+        "devrait l'emporter", "devrait dominer", "devrait s'imposer",
+        'victoire', 'gagne', "l'emporter", 'dominer', "s'imposer",
+        'favori', 'favoris'
     ];
 
-    // Chercher la première occurrence d'un mot clé de victoire
     let positionVictoire = Infinity;
     motsCleVictoire.forEach(mot => {
         const pos = text.indexOf(mot);
@@ -33,14 +31,24 @@ function detectProno(analyse, domicile, exterieur) {
         }
     });
 
-    if (positionVictoire === Infinity) return '1';
+    if (positionVictoire === Infinity) {
+        // Chercher avantage + nom équipe
+        const posAvantage = text.indexOf('avantage');
+        if (posAvantage !== -1) {
+            const textApresAvantage = text.substring(posAvantage);
+            const extMots = ext.split(' ').filter(m => m.length > 2);
+            const domMots = dom.split(' ').filter(m => m.length > 2);
+            if (extMots.some(m => textApresAvantage.includes(m))) return '2';
+            if (domMots.some(m => textApresAvantage.includes(m))) return '1';
+        }
+        return '1';
+    }
 
-    // Chercher quelle équipe est mentionnée avant ce mot clé
     const textAvantVictoire = text.substring(0, positionVictoire);
 
-    // Chercher les mots de l'équipe extérieure
-    const extMots = ext.split(' ').filter(m => m.length > 3);
-    const domMots = dom.split(' ').filter(m => m.length > 3);
+    // filtre longueur > 2 au lieu de > 3
+    const extMots = ext.split(' ').filter(m => m.length > 2);
+    const domMots = dom.split(' ').filter(m => m.length > 2);
 
     const extMentionne = extMots.some(mot => textAvantVictoire.includes(mot));
     const domMentionne = domMots.some(mot => textAvantVictoire.includes(mot));
@@ -48,9 +56,12 @@ function detectProno(analyse, domicile, exterieur) {
     if (extMentionne && !domMentionne) return '2';
     if (domMentionne && !extMentionne) return '1';
 
-    // Si victoire à l'extérieur mentionnée
     if (text.includes('extérieur') || text.includes('exterieur') ||
         text.includes('déplacement') || text.includes('deplacement')) {
+        // Vérifier que c'est pas "peine à l'extérieur"
+        if (text.includes('peine à l\'extérieur') || text.includes('peine a l\'exterieur')) {
+            return '1';
+        }
         return '2';
     }
 
