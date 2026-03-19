@@ -139,11 +139,7 @@ app.get('/pronos', async (req, res) => {
                 disponible: false,
                 message: {
                     titre: "👑 KING PRONOS",
-                    texte: "🇫🇷 Inscrivez-vous avec le code promo VS75 sur 1xBet pour bénéficier des prochaines prédictions gratuites.
-
-🇬🇧 Register with promo code VS75 on 1xBet to get the next free predictions.
-
-🇸🇦 سجّل بالرمز الترويجي VS75 على 1xBet للاستفادة من التوقعات المجانية القادمة.",
+                    texte: "🇫🇷 Inscrivez-vous avec le code promo VS75 sur 1xBet pour bénéficier des prochaines prédictions gratuites.\n\n🇬🇧 Register with promo code VS75 on 1xBet to get the next free predictions.\n\n🇸🇦 سجّل بالرمز الترويجي VS75 على 1xBet للاستفادة من التوقعات المجانية القادمة.",
                     promo: {
                         code: "VS75",
                         lien: "https://reffpa.com/L?tag=d_3359543m_10702c_&site=3359543&ad=10702",
